@@ -1,0 +1,25 @@
+from transformers import pipeline
+import librosa
+import io
+from utils import load_config
+config = load_config()
+
+def convert_bytes_to_array(audio_bytes):
+    audio_bytes = io.BytesIO(audio_bytes)
+    audio, sample_rate = librosa.load(audio_bytes)
+    print(sample_rate)
+    return audio
+
+def transcribe_audio(audio_bytes):
+    device = "cpu"
+    pipe = pipeline(
+        task="automatic-speech-recognition",
+        model=config["whisper_model"],
+        chunk_length_s=30,
+        device=device,
+    )
+
+    audio_array = convert_bytes_to_array(audio_bytes)
+    prediction = pipe(audio_array, batch_size=1)["text"]
+
+    return prediction
