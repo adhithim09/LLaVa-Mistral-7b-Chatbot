@@ -1,1 +1,5 @@
-
+__pycache__/
+*.pyc
+venv/
+.env
+model_checkpoints/
