@@ -1,12 +1,20 @@
 from prompt_templates import memory_prompt_template, pdf_chat_prompt
-from langchain.chains import LLMChain
-from langchain.chains.retrieval_qa.base import RetrievalQA
+
+# Fixed imports for LangChain 2026
+from langchain_classic.chains import LLMChain
+from langchain_classic.chains.retrieval_qa.base import RetrievalQA
+
+from langchain_core.prompts import PromptTemplate
+from langchain_core.messages import HumanMessage, AIMessage
+from langchain_core.documents import Document   # Added for safety
+
 from langchain_community.embeddings import HuggingFaceInstructEmbeddings
-from langchain.memory import ConversationBufferWindowMemory
-from langchain.prompts import PromptTemplate
 from langchain_community.llms import CTransformers
 from langchain_community.vectorstores import Chroma
 from langchain_community.llms import Ollama
+
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+
 from operator import itemgetter
 from utils import load_config
 import chromadb
@@ -27,10 +35,6 @@ def create_llm(model_path=config["ctransformers"]["model_path"]["large"],
 
 def create_embeddings(embeddings_path=config["embeddings_path"]):
     return HuggingFaceInstructEmbeddings(model_name=embeddings_path)
-
-
-def create_chat_memory(chat_history):
-    return ConversationBufferWindowMemory(memory_key="history", chat_memory=chat_history, k=3)
 
 
 def create_prompt_from_template(template):

@@ -1,7 +1,7 @@
 import json
-from langchain.schema.messages import HumanMessage, AIMessage
 from datetime import datetime
 import yaml
+from langchain_core.messages import HumanMessage, AIMessage
 
 
 def load_config():
