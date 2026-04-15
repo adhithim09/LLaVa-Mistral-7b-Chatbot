@@ -1,8 +1,8 @@
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.schema.document import Document
+from langchain_core.documents import Document
 from llm_chains import load_vectordb, create_embeddings
 from utils import load_config
 import pypdfium2
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 config = load_config()
 
