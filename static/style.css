@@ -1,0 +1,30 @@
+/* static/style.css */
+
+body {
+    font-family: Arial;
+}
+
+#chat-box {
+    width: 60%;
+    margin: auto;
+    border: 1px solid #ccc;
+    padding: 10px;
+    height: 400px;
+    overflow-y: scroll;
+}
+
+.user {
+    background: #2b313e;
+    color: white;
+    padding: 8px;
+    margin: 5px;
+    border-radius: 5px;
+}
+
+.bot {
+    background: #b3c8f2;
+    color: black;
+    padding: 8px;
+    margin: 5px;
+    border-radius: 5px;
+}
