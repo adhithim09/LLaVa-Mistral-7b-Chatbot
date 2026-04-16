@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Converso</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<h2>Converso Chat</h2>
+
+<div id="chat-box"></div>
+
+<input type="text" id="user-input" placeholder="Type message..." />
+<button onclick="sendMessage()">Send</button>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>
