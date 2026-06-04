@@ -4,6 +4,7 @@ import base64
 from core.utils import load_config
 from PIL import Image # pyrefly: ignore [missing-import]
 import io
+from handler.image_cache import image_cache
 
 config = load_config()
 
@@ -31,11 +32,19 @@ def resize_image_if_large(image_bytes, max_dim=800):
     return image_bytes
 
 def handle_image(image_bytes, user_input):
+    max_dim = config.get("system_config", {}).get("max_image_dimension", 800)
+
+    # CRITICAL: Check cache before processing
+    cached_result = image_cache.get(image_bytes, max_dim=max_dim)
+    if cached_result is not None:
+        print(f"[Cache HIT] Using cached image processing result")
+        return cached_result
+
     # Retrieve configuration with fallback support to prevent KeyErrors
     moondream_config = config.get("moondream", {})
     clip_model_path = moondream_config.get("clip_model_path") or config.get("llava_model", {}).get("clip_model_path")
     model_path = moondream_config.get("model_path") or config.get("llava_model", {}).get("llava_model_path")
-    
+
     if not clip_model_path or not model_path:
         raise ValueError("Model paths for LLavA/Moondream model or CLIP vision model are not configured.")
 
@@ -51,7 +60,6 @@ def handle_image(image_bytes, user_input):
     )
 
     # Resize large images to optimize local performance
-    max_dim = config.get("system_config", {}).get("max_image_dimension", 800)
     resized_bytes = resize_image_if_large(image_bytes, max_dim=max_dim)
     image_base64 = convert_bytes_to_base64(resized_bytes)
 
@@ -70,4 +78,10 @@ def handle_image(image_bytes, user_input):
         ]
     )
 
-    return response["choices"][0]["message"]["content"]
+    result = response["choices"][0]["message"]["content"]
+
+    # Cache the processing result
+    image_cache.set(image_bytes, result, max_dim=max_dim)
+    print(f"[Cache MISS] Processed image and cached result")
+
+    return result
