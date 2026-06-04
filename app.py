@@ -5,6 +5,7 @@ from llm.llm_chains import load_normal_chain, load_pdf_chat_chain
 from streamlit_mic_recorder import mic_recorder
 from core.utils import get_timestamp, load_config
 from handler.image_handler import handle_image
+from core.image_validator import ImageValidationError
 from handler.audio_handler import transcribe_audio
 from handler.pdf_handler import add_documents_to_db
 from html_templates import css
@@ -126,11 +127,14 @@ def main():
     if user_input:
         if uploaded_image:
             with st.spinner("Processing image..."):
-                llm_answer = handle_image(uploaded_image.getvalue(), user_input)
-                save_text_message(st.session_state.db_conn, get_session_key(), "human", user_input)
-                save_image_message(st.session_state.db_conn, get_session_key(), "human", uploaded_image.getvalue())
-                save_text_message(st.session_state.db_conn, get_session_key(), "ai", llm_answer)
-                user_input = None
+                try:
+                    llm_answer = handle_image(uploaded_image.getvalue(), user_input)
+                    save_text_message(st.session_state.db_conn, get_session_key(), "human", user_input)
+                    save_image_message(st.session_state.db_conn, get_session_key(), "human", uploaded_image.getvalue())
+                    save_text_message(st.session_state.db_conn, get_session_key(), "ai", llm_answer)
+                    user_input = None
+                except ImageValidationError as e:
+                    st.error(f"Image validation failed: {str(e)}")
 
         if user_input:
             llm_chain = load_chain()

@@ -2,6 +2,7 @@ from llama_cpp import Llama # pyrefly: ignore [missing-import]
 from llama_cpp.llama_chat_format import Llava15ChatHandler # pyrefly: ignore [missing-import]
 import base64
 from core.utils import load_config
+from core.image_validator import validate_image_bytes, ImageValidationError
 from PIL import Image # pyrefly: ignore [missing-import]
 import io
 
@@ -31,11 +32,16 @@ def resize_image_if_large(image_bytes, max_dim=800):
     return image_bytes
 
 def handle_image(image_bytes, user_input):
+    # Validate image before processing
+    is_valid, error_message = validate_image_bytes(image_bytes)
+    if not is_valid:
+        raise ImageValidationError(f"Image validation failed: {error_message}")
+
     # Retrieve configuration with fallback support to prevent KeyErrors
     moondream_config = config.get("moondream", {})
     clip_model_path = moondream_config.get("clip_model_path") or config.get("llava_model", {}).get("clip_model_path")
     model_path = moondream_config.get("model_path") or config.get("llava_model", {}).get("llava_model_path")
-    
+
     if not clip_model_path or not model_path:
         raise ValueError("Model paths for LLavA/Moondream model or CLIP vision model are not configured.")
 
