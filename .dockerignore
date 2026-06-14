@@ -1,0 +1,25 @@
+# Git files
+.git
+.github
+.gitignore
+
+# Python caching
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local virtual environment
+venv/
+.env
+
+# Model weights (large files, should be mounted or loaded via volume)
+models/
+models/llava/
+
+# SQLite sessions and vector DB
+chat_sessions/
+chroma_db/
