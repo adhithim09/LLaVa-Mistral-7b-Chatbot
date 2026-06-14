@@ -1,0 +1,28 @@
+name: Performance Benchmark
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          pip install pytest pytest-benchmark
+          pip install -r requirements.txt
+
+      - name: Run benchmarks
+        run: |
+          pytest tests/ --benchmark-only --benchmark-json=benchmark_results.json || true
