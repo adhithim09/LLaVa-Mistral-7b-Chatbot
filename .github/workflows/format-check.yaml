@@ -1,0 +1,24 @@
+name: Code Formatter
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  format-check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.10"
+
+    - name: Install formatter (Black)
+      run: pip install black
+
+    - name: Run Black formatter check
+      run: black --check . --exclude "/(venv|\.git|\.pytest_cache|__pycache__)/"
