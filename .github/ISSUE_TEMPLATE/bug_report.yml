@@ -51,3 +51,20 @@ body:
         - Other
     validations:
       required: true
+  - type: input
+    id: python_version
+    attributes:
+      label: Python Version
+      description: E.g., 3.10.12
+      placeholder: 3.10.x
+    validations:
+      required: false
+  - type: input
+    id: model_used
+    attributes:
+      label: Model Used
+      description: E.g., Mistral-7B Q3_K_M, LLaVA Q5_K
+      placeholder: Mistral-7B Q3_K_M
+    validations:
+      required: false
+
