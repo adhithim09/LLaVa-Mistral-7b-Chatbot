@@ -1,0 +1,23 @@
+name: Markdown Linter
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  markdownlint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Run Markdown Linter
+        uses: davidanson/markdownlint-cli2-action@v16
+        with:
+          globs: |
+            **/*.md
+            !venv/**
+            !node_modules/**
+            !.github/**
